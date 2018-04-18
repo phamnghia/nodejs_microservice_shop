@@ -1,0 +1,22 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: shop-product
+  labels:
+    name: shop-product
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: shop-product
+    spec:
+      containers:
+      - name: shop-product
+        image: kyllynk/product
+        ports:
+        - containerPort: 80
+      - name: shop-product-mongodb
+        image: mongo
+        ports:
+        - containerPort: 27017
