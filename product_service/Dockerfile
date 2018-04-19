@@ -4,7 +4,7 @@ WORKDIR /usr/src/demo_shop/product
 
 COPY package*.json .
 
-RUN npm install
+RUN npm install && apt update && apt install -y nano
 
 COPY . .
 

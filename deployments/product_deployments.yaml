@@ -1,9 +1,32 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
+  name: shop-product-mongodb
+  labels:
+    name: shop-product-mongodb
+    system: shop-demo-microservice
+    app: product-service
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: shop-product-mongodb
+    spec:
+      containers:
+      - name: shop-product-mongodb
+        image: mongo
+        ports:
+        - containerPort: 27017
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
   name: shop-product
   labels:
     name: shop-product
+    system: shop-demo-microservice
+    app: product-service
 spec:
   replicas: 1
   template:
@@ -12,14 +35,18 @@ spec:
         name: shop-product
     spec:
       containers:
-      - name: shop-product-mongodb
-        image: mongo
-        ports:
-        - containerPort: 27017
-        env:
-        - name: SERVICE_NAME
-          value: Product Service
       - name: shop-product
-        image: kyllynk/product:0.4
+        image: kyllynk/product:0.5
         ports:
         - containerPort: 80
+        env:
+        - name: SERVICE_NAME
+          value: "Product Service"
+        - name: DOCKER_TAG
+          value: "0.5"
+        - name: PRODUCT_MONGODB_HOST
+          value: "shop-product-mongodb"
+        - name: PRODUCT_MONGODB_PORT
+          value: "27017"
+        - name: PRODUCT_MONGODB_DBNAME
+          value: "products"
