@@ -1,4 +1,5 @@
-require('dotenv').load();
+if(process.env.DEV_MODE == "dev") require('dotenv').load();
+
 const mongoose = require('mongoose');
 const express = require("express");
 const app = express();

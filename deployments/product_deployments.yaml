@@ -36,7 +36,7 @@ spec:
     spec:
       containers:
       - name: shop-product
-        image: kyllynk/product:0.5
+        image: kyllynk/product:0.6
         ports:
         - containerPort: 80
         env:
@@ -50,3 +50,20 @@ spec:
           value: "27017"
         - name: PRODUCT_MONGODB_DBNAME
           value: "products"
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: product-mongodb-service
+  labels:
+    name: product-mongodb-service
+    system: shop-demo-microservice
+    app: product-service
+spec:
+  selector:
+    app: shop-product-mongodb
+  ports:
+    - port: 27017
+      targetPort: 27017
