@@ -7,13 +7,12 @@ const app = express();
 const Product = require("./models/product");
 
 // Running app
-console.log(process.env.PORT)
-// mongoose.connect('mongodb://localhost/my_database')
-// 	.then(() => {
-// 		app.listen(80, () => console.log("Product service is running on port 80"));
-// 	}).catch(err => {
-// 		console.log("Can't connect database");
-// 	});;
+mongoose.connect('mongodb://localhost/my_database')
+	.then(() => {
+		app.listen(80, () => console.log("Product service is running on port 80"));
+	}).catch(err => {
+		console.log("Can't connect database");
+	});;
 
 
 // Routes
