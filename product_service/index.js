@@ -2,7 +2,12 @@ if(process.env.DEV_MODE == "dev") require('dotenv').load();
 
 const mongoose = require('mongoose');
 const express = require("express");
+const bodyParser = require("body-parser");
 const app = express();
+
+app.use(bodyParser());
+
+console.log(process.env.DEV_MODE)
 
 // Model
 const Product = require("./models/product");
@@ -11,11 +16,9 @@ const Product = require("./models/product");
 console.log(`Product Service - Tag: ${process.env.DOCKER_TAG} | Service name: ${process.env.SERVICE_NAME}`);
 mongoose.connect(`mongodb://${process.env.PRODUCT_MONGODB_HOST}:${process.env.PRODUCT_MONGODB_PORT}/${process.env.PRODUCT_MONGODB_DBNAME}`)
 	.then(() => {
-		app.listen(80, () => console.log("Product service is running on port 80"));
+		app.listen(8888, () => console.log("Product service is running on port 80"));
 	}).catch(err => {
 		console.log("Can't connect database");
-	}).then(a => {
-		app.listen(8999, () => console.log("Starting temp server"))
 	});
 
 

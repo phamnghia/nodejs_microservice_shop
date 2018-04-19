@@ -1,3 +1,40 @@
+#Mongo DB service
+kind: Service
+apiVersion: v1
+metadata:
+  name: product-mongodb-service
+  labels:
+    name: product-mongodb-service
+    system: shop-demo-microservice
+    app: product-service
+spec:
+  selector:
+    name: shop-product-mongodb
+  type: NodePort
+  externalTrafficPolicy: Local
+  ports:
+    - port: 27017
+      targetPort: 27017
+---
+
+#Persitent volume
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: product-mongodb-volume
+  labels:
+    name: product-mongodb-volume
+    system: shop-demo-microservice
+    app: product-service
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 3Gi
+---
+
+#Mongo DB deployment
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -18,7 +55,36 @@ spec:
         image: mongo
         ports:
         - containerPort: 27017
+        volumeMounts:
+          - name: self-volume
+            mountPath: /data/db
+      volumes:
+        - name: self-volume
+          persistentVolumeClaim:
+            claimName: product-mongodb-volume
+
 ---
+
+#Product API service
+kind: Service
+apiVersion: v1
+metadata:
+  name: product-api-service
+  labels:
+    name: product-api-service
+    system: shop-demo-microservice
+    app: product-service
+spec:
+  selector:
+    name: shop-product
+  type: NodePort
+  externalTrafficPolicy: Local
+  ports:
+    - port: 80
+      targetPort: 80
+---
+
+#Product deployment
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
@@ -36,7 +102,7 @@ spec:
     spec:
       containers:
       - name: shop-product
-        image: kyllynk/product:0.6
+        image: kyllynk/product:latest
         ports:
         - containerPort: 80
         env:
@@ -45,25 +111,8 @@ spec:
         - name: DOCKER_TAG
           value: "0.5"
         - name: PRODUCT_MONGODB_HOST
-          value: "shop-product-mongodb"
+          value: "product-mongodb-service"
         - name: PRODUCT_MONGODB_PORT
           value: "27017"
         - name: PRODUCT_MONGODB_DBNAME
           value: "products"
-
----
-
-kind: Service
-apiVersion: v1
-metadata:
-  name: product-mongodb-service
-  labels:
-    name: product-mongodb-service
-    system: shop-demo-microservice
-    app: product-service
-spec:
-  selector:
-    app: shop-product-mongodb
-  ports:
-    - port: 27017
-      targetPort: 27017
