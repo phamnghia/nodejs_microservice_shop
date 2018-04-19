@@ -13,7 +13,9 @@ mongoose.connect(`mongodb://${process.env.MONGODB_HOST}:${process.env.MONGODB_PO
 		app.listen(80, () => console.log("Product service is running on port 80"));
 	}).catch(err => {
 		console.log("Can't connect database");
-	});;
+	}).then(a => {
+		app.listen(8999, () => console.log("Starting temp server"))
+	});
 
 
 // Routes
