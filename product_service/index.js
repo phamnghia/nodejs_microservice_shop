@@ -7,6 +7,7 @@ const app = express();
 const Product = require("./models/product");
 
 // Running app
+console.log(`Product Service - Tag: ${process.env.DOCKER_TAG}`)
 mongoose.connect(`mongodb://${process.env.MONGODB_HOST}:${process.env.MONGODB_PORT}/${process.env.MONGODB_DATABASE_NAME}`)
 	.then(() => {
 		app.listen(80, () => console.log("Product service is running on port 80"));
