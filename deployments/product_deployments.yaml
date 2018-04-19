@@ -12,11 +12,14 @@ spec:
         name: shop-product
     spec:
       containers:
-      - name: shop-product
-        image: kyllynk/product:0.4
-        ports:
-        - containerPort: 80
       - name: shop-product-mongodb
         image: mongo
         ports:
         - containerPort: 27017
+        env:
+        - name: SERVICE_NAME
+          value: Product Service
+      - name: shop-product
+        image: kyllynk/product:0.4
+        ports:
+        - containerPort: 80
