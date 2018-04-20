@@ -1,3 +1,57 @@
+#Product API service
+kind: Service
+apiVersion: v1
+metadata:
+  name: product-api-service
+  labels:
+    name: product-api-service
+    system: shop-demo-microservice
+    app: product-service
+spec:
+  selector:
+    name: shop-product
+  type: NodePort
+  externalTrafficPolicy: Local
+  ports:
+    - port: 80
+      targetPort: 80
+---
+
+#Product deployment
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: shop-product
+  labels:
+    name: shop-product
+    system: shop-demo-microservice
+    app: product-service
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: shop-product
+    spec:
+      containers:
+      - name: shop-product
+        image: kyllynk/product:0.7
+        ports:
+        - containerPort: 80
+        env:
+        - name: SERVICE_NAME
+          value: "Product Service"
+        - name: DOCKER_TAG
+          value: "0.5"
+        - name: PRODUCT_MONGODB_HOST
+          value: "product-mongodb-service"
+        - name: PRODUCT_MONGODB_PORT
+          value: "27017"
+        - name: PRODUCT_MONGODB_DBNAME
+          value: "products"
+
+---
+
 #Mongo DB service
 kind: Service
 apiVersion: v1
@@ -10,8 +64,7 @@ metadata:
 spec:
   selector:
     name: shop-product-mongodb
-  type: NodePort
-  externalTrafficPolicy: Local
+  type: LoadBalancer
   ports:
     - port: 27017
       targetPort: 27017
@@ -62,57 +115,3 @@ spec:
         - name: self-volume
           persistentVolumeClaim:
             claimName: product-mongodb-volume
-
----
-
-#Product API service
-kind: Service
-apiVersion: v1
-metadata:
-  name: product-api-service
-  labels:
-    name: product-api-service
-    system: shop-demo-microservice
-    app: product-service
-spec:
-  selector:
-    name: shop-product
-  type: NodePort
-  externalTrafficPolicy: Local
-  ports:
-    - port: 80
-      targetPort: 80
----
-
-#Product deployment
-apiVersion: extensions/v1beta1
-kind: Deployment
-metadata:
-  name: shop-product
-  labels:
-    name: shop-product
-    system: shop-demo-microservice
-    app: product-service
-spec:
-  replicas: 1
-  template:
-    metadata:
-      labels:
-        name: shop-product
-    spec:
-      containers:
-      - name: shop-product
-        image: kyllynk/product:latest
-        ports:
-        - containerPort: 80
-        env:
-        - name: SERVICE_NAME
-          value: "Product Service"
-        - name: DOCKER_TAG
-          value: "0.5"
-        - name: PRODUCT_MONGODB_HOST
-          value: "product-mongodb-service"
-        - name: PRODUCT_MONGODB_PORT
-          value: "27017"
-        - name: PRODUCT_MONGODB_DBNAME
-          value: "products"
