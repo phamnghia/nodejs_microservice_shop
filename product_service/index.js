@@ -7,16 +7,13 @@ const app = express();
 
 app.use(bodyParser());
 
-console.log(process.env.DEV_MODE)
-
 // Model
 const Product = require("./models/product");
 
 // Running app
-console.log(`Product Service - Tag: ${process.env.DOCKER_TAG} | Service name: ${process.env.SERVICE_NAME}`);
-mongoose.connect(`mongodb://${process.env.PRODUCT_MONGODB_HOST}:${process.env.PRODUCT_MONGODB_PORT}/${process.env.PRODUCT_MONGODB_DBNAME}`)
+mongoose.connect(`mongodb://${process.env.MONGODB_HOST}:${process.env.MONGODB_PORT}/${process.env.MONGODB_DBNAME}`)
 	.then(() => {
-		app.listen(process.env.PORT || 8888, () => console.log("Product service is running on port 80"));
+		app.listen(process.env.PORT || 8001, () => console.log(`Product service is running on port ${process.env.PORT || 8001}`));
 	}).catch(err => {
 		console.log("Can't connect database");
 	});

@@ -1,0 +1,40 @@
+{% extends "./layout/layout.html" %}
+
+{% block content %}
+<table border="1" style="width: 100%;">
+	<thead>
+		<th>Name</th>
+		<th>Quantity</th>
+		<th>Total cost</th>
+	</thead>
+
+	<tbody>
+		{% for product in basket %}
+			<tr>
+				<td>{{product.name}}</td>
+				<td>{{product.quantity}}</td>
+				<td>{{product.total_cost}}</td>
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>
+
+<button onclick="checkout()">
+	CHECKOUT TOTAL: {{total_cost}}
+</button>
+
+<script>
+	function checkout(){
+		$.ajax({
+			url : "/checkout",
+			method : "post",
+			success : data => {
+				if(data.success) {
+					alert("Thanh toán thành công");
+					window.location = window.location;
+				} else alert(data.message);
+			}
+		})
+	}
+</script>
+{% endblock %}

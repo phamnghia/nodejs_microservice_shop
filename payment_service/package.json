@@ -1,0 +1,19 @@
+{
+	"name": "payment_service",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"start": "node index.js",
+		"dev": "DEV_MODE=dev node index.js"
+	},
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"express": "*",
+		"request-promise": "*"
+	},
+	"devDependencies": {
+		"dotenv": "*"
+	}
+}

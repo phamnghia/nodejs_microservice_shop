@@ -1,0 +1,40 @@
+{% extends "./layout/layout.html" %}
+
+{% block content %}
+<table border="1" style="width: 100%;">
+	<thead>
+		<th>Name</th>
+		<th>Price</th>
+		<th>Stock</th>
+		<th>Action</th>
+	</thead>
+
+	<tbody>
+		{% for product in products %}
+			<tr>
+				<td>{{product.name}}</td>
+				<td>{{product.price}}</td>
+				<td>{{product.stock}}</td>
+				<td>
+					<input type="button" value="Add" onclick="addToBasket('{{product._id}}')">
+				</td>
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>
+
+<script>
+	function addToBasket(product){
+		$.ajax({
+			url : "/add-to-basket",
+			type : "post",
+			data : {product},
+			success: data => {
+				console.log(data)
+				if(data.success) alert("Đã thêm vào giỏ hàng");
+				else alert(data.message)
+			}
+		})
+	}
+</script>
+{% endblock %}

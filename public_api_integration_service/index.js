@@ -23,6 +23,36 @@ app.use(`/${process.env.PRODUCT_SERVICE_PREFIX}`, proxy(
 	}
 ));
 
+// Payment proxy management
+app.use(`/${process.env.PAYMENT_SERVICE_PREFIX}`, proxy(
+	`${defaultProtocol}://${process.env.PAYMENT_SERVICE_DOMAIN}`, {
+		filter: function(req, res) {
+			let rules = [
+				{method : "GET", path : `/${process.env.PAYMENT_SERVICE_PREFIX}/list`},
+				{method : "POST", path : `/${process.env.PAYMENT_SERVICE_PREFIX}/create`},
+				{method : "POST", path : new RegExp(`^\/${process.env.PAYMENT_SERVICE_PREFIX}\/payment-callback`)}
+			]
+			
+			return isAcceptableRequest(rules, req);
+		}
+	}
+));
+
+// Order proxy management
+app.use(`/${process.env.ORDER_SERVICE_PREFIX}`, proxy(
+	`${defaultProtocol}://${process.env.ORDER_SERVICE_DOMAIN}`, {
+		filter: function(req, res) {
+			let rules = [
+				{method : "GET", path : `/${process.env.ORDER_SERVICE_PREFIX}/list`},
+				{method : "GET", path : new RegExp(`^\/${process.env.ORDER_SERVICE_PREFIX}\/[a-zA-Z0-9]+\/detail`)},
+				{method : "POST", path : `/${process.env.ORDER_SERVICE_PREFIX}/create`},
+			]
+			
+			return isAcceptableRequest(rules, req);
+		}
+	}
+));
+
 // Util Methods
 function isAcceptableRequest(rules, req){
 	let canPass = false;
@@ -43,6 +73,6 @@ function isAcceptableRequest(rules, req){
 }
 
 app.listen(
-	process.env.PORT || 8899, 
-	() => console.log("Public API management system is running on port 8899")
+	process.env.PORT || 8888, 
+	() => console.log(`Public API management system is running on port ${process.env.PORT || 8888}`)
 );

@@ -5,13 +5,12 @@ metadata:
   name: product-api-service
   labels:
     name: product-api-service
-    system: shop-demo-microservice
+    system: demo-micro
     app: product-service
 spec:
   selector:
     name: shop-product
-  type: NodePort
-  externalTrafficPolicy: Local
+  type: ClusterIP
   ports:
     - port: 80
       targetPort: 80
@@ -24,7 +23,7 @@ metadata:
   name: shop-product
   labels:
     name: shop-product
-    system: shop-demo-microservice
+    system: demo-micro
     app: product-service
 spec:
   replicas: 1
@@ -35,10 +34,12 @@ spec:
     spec:
       containers:
       - name: shop-product
-        image: kyllynk/product:0.7
+        image: kyllynk/product:0.8
         ports:
         - containerPort: 80
         env:
+        - name: PORT
+          value: "80"
         - name: SERVICE_NAME
           value: "Product Service"
         - name: DOCKER_TAG
@@ -59,12 +60,12 @@ metadata:
   name: product-mongodb-service
   labels:
     name: product-mongodb-service
-    system: shop-demo-microservice
+    system: demo-micro
     app: product-service
 spec:
   selector:
     name: shop-product-mongodb
-  type: LoadBalancer
+  type: ClusterIP
   ports:
     - port: 27017
       targetPort: 27017
@@ -77,7 +78,7 @@ metadata:
   name: product-mongodb-volume
   labels:
     name: product-mongodb-volume
-    system: shop-demo-microservice
+    system: demo-micro
     app: product-service
 spec:
   accessModes:
@@ -94,7 +95,7 @@ metadata:
   name: shop-product-mongodb
   labels:
     name: shop-product-mongodb
-    system: shop-demo-microservice
+    system: demo-micro
     app: product-service
 spec:
   replicas: 1
@@ -115,3 +116,63 @@ spec:
         - name: self-volume
           persistentVolumeClaim:
             claimName: product-mongodb-volume
+---
+
+#Product API service
+kind: Service
+apiVersion: v1
+metadata:
+  name: public-integration-service
+  labels:
+    name: public-integration-service
+    system: demo-micro
+    app: public-intergration-service
+spec:
+  selector:
+    name: public-integration
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: 80
+---
+
+#Product deployment
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: public-integration
+  labels:
+    name: public-integration
+    system: demo-micro
+    app: public-intergration-service
+spec:
+  replicas: 2
+  template:
+    metadata:
+      labels:
+        name: public-integration
+    spec:
+      containers:
+      - name: public-integration
+        image: kyllynk/public-integration:0.1
+        ports:
+        - containerPort: 80
+        env:
+        - name: PORT
+          value: "80"
+        - name: VERSION
+          value: "v1"
+        - name: USE_SSL
+          value: "0"
+        - name: PRODUCT_SERVICE_PREFIX
+          value: "product"
+        - name: PRODUCT_SERVICE_DOMAIN
+          value: "product-api-service"
+        - name: ORDER_SERVICE_PREFIX
+          value: "order"
+        - name: ORDER_SERVICE_DOMAIN
+          value: "order-api-service"
+        - name: PAYMENT_SERVICE_PREFIX
+          value: "payment"
+        - name: PAYMENT_SERVICE_DOMAIN
+          value: "payment-api-service"

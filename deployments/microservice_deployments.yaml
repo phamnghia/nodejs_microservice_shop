@@ -1,0 +1,366 @@
+#Product deployment
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: product-app
+  labels:
+    name: product-app
+    system: demo-micro
+    app: product
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: product-app
+    spec:
+      containers:
+      - name: product-app
+        image: kyllynk/product:1.0
+        ports:
+        - containerPort: 80
+        env:
+        - name: PORT
+          value: "80"
+        - name: MONGODB_HOST
+          value: "product-db-svc"
+        - name: MONGODB_PORT
+          value: "27017"
+        - name: MONGODB_DBNAME
+          value: "products"
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: product-svc
+  labels:
+    name: product-svc
+    system: demo-micro
+    app: product
+spec:
+  selector:
+    name: product-app
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 80
+---
+
+#Order deployment
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: order-app
+  labels:
+    name: order-app
+    system: demo-micro
+    app: order
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: order-app
+    spec:
+      containers:
+      - name: order-app
+        image: kyllynk/order:1.0
+        ports:
+        - containerPort: 80
+        env:
+        - name: PORT
+          value: "80"
+        - name: MONGODB_HOST
+          value: "order-db-svc"
+        - name: MONGODB_PORT
+          value: "27017"
+        - name: MONGODB_DBNAME
+          value: "orders"
+        - name: PRODUCT_SERVICE
+          value: product-svc
+        - name: REPORT_SERVICE
+          value: report-svc
+        - name: NOTIFICATION_SERVICE
+          value: notification-svc
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: order-svc
+  labels:
+    name: order-svc
+    system: demo-micro
+    app: order
+spec:
+  selector:
+    name: order-app
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 80
+---
+
+#Payment deployment
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: payment-app
+  labels:
+    name: payment-app
+    system: demo-micro
+    app: payment
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: payment-app
+    spec:
+      containers:
+      - name: payment-app
+        image: kyllynk/payment:1.0
+        ports:
+        - containerPort: 80
+        env:
+        - name: PORT
+          value: "80"
+        - name: MONGODB_HOST
+          value: "payment-db-svc"
+        - name: MONGODB_PORT
+          value: "27017"
+        - name: MONGODB_DBNAME
+          value: "payments"
+        - name: ORDER_SERVICE
+          value: "order-svc"
+        - name: REPORT_SERVICE
+          value: "report-svc"
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: payment-svc
+  labels:
+    name: payment-svc
+    system: demo-micro
+    app: payment
+spec:
+  selector:
+    name: payment-app
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 80
+---
+
+#Report deployment
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: report-app
+  labels:
+    name: report-app
+    system: demo-micro
+    app: report
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: report-app
+    spec:
+      containers:
+      - name: report-app
+        image: kyllynk/report:1.0
+        ports:
+        - containerPort: 80
+        env:
+        - name: PORT
+          value: "80"
+        - name: MONGODB_HOST
+          value: "report-db-svc"
+        - name: MONGODB_PORT
+          value: "27017"
+        - name: MONGODB_DBNAME
+          value: "reports"
+        - name: PRODUCT_SERVICE
+          value: "product-svc"
+        - name: PAYMENT_SERVICE
+          value: "payment-svc"
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: report-svc
+  labels:
+    name: report-svc
+    system: demo-micro
+    app: report
+spec:
+  selector:
+    name: report-app
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 80
+---
+
+#Notification deployment
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: notification-app
+  labels:
+    name: notification-app
+    system: demo-micro
+    app: notification
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: notification-app
+    spec:
+      containers:
+      - name: notification-app
+        image: kyllynk/notification:1.0
+        ports:
+        - containerPort: 80
+        env:
+        - name: PORT
+          value: "80"
+        - name: MONGODB_HOST
+          value: "notification-db-svc"
+        - name: MONGODB_PORT
+          value: "27017"
+        - name: MONGODB_DBNAME
+          value: "notifications"
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: notification-svc
+  labels:
+    name: notification-svc
+    system: demo-micro
+    app: notification
+spec:
+  selector:
+    name: notification-app
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 80
+---
+
+#Public API deployment
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: public-api-app
+  labels:
+    name: public-api-app
+    system: demo-micro
+    app: public-api
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: public-api-app
+    spec:
+      containers:
+      - name: public-api-app
+        image: kyllynk/public-api:1.0
+        ports:
+        - containerPort: 80
+        env:
+        - name: PORT
+          value: "80"
+        - name: USE_SSL
+          value: "0"
+        - name: PRODUCT_SERVICE_PREFIX
+          value: "product"
+        - name: PRODUCT_SERVICE_DOMAIN
+          value: "product-svc"
+        - name: ORDER_SERVICE_PREFIX
+          value: "order"
+        - name: ORDER_SERVICE_DOMAIN
+          value: "order-svc"
+        - name: PAYMENT_SERVICE_PREFIX
+          value: "payment"
+        - name: PAYMENT_SERVICE_DOMAIN
+          value: "payment-svc"
+        
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: public-api-svc
+  labels:
+    name: public-api-svc
+    system: demo-micro
+    app: public-api
+spec:
+  selector:
+    name: public-api-app
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 80
+---
+
+#Frontend deployment
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: frontend-app
+  labels:
+    name: frontend-app
+    system: demo-micro
+    app: frontend
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: frontend-app
+    spec:
+      containers:
+      - name: frontend-app
+        image: kyllynk/frontend:1.0
+        ports:
+        - containerPort: 80
+        env:
+        - name: PORT
+          value: "80"
+        - name: MONGODB_HOST
+          value: "frontend-db"
+        - name: MONGODB_PORT
+          value: "27018"
+        - name: MONGODB_DBNAME
+          value: "sessions"
+        - name: PUBLIC_API_SERVICE
+          value: "public-api-svc"
+        - name: PRODUCT_PREFIX
+          value: "product"
+        - name: ORDER_PREFIX
+          value: "order"
+        - name: PAYMENT_PREFIX
+          value: "payment"
+        
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: frontend-svc
+  labels:
+    name: frontend-svc
+    system: demo-micro
+    app: frontend
+spec:
+  selector:
+    name: frontend-app
+  type: LoadBalancer
+  ports:
+    - port: 80
+      targetPort: 80

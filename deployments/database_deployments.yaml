@@ -1,0 +1,365 @@
+# Product DB
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: product-pvc
+  labels:
+    name: product-pvc
+    system: demo-micro
+    app: product
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 3Gi
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: product-db
+  labels:
+    name: product-db
+    system: demo-micro
+    app: product
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: product-db
+    spec:
+      containers:
+      - name: product-db
+        image: mongo
+        ports:
+        - containerPort: 27017
+        volumeMounts:
+          - name: self-volume
+            mountPath: /data/db
+      volumes:
+        - name: self-volume
+          persistentVolumeClaim:
+            claimName: product-pvc
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: product-db-svc
+  labels:
+    name: product-db-svc
+    system: demo-micro
+    app: product
+spec:
+  selector:
+    name: product-db
+  type: ClusterIP
+  ports:
+    - port: 27017
+      targetPort: 27017
+---
+
+# Order DB
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: order-pvc
+  labels:
+    name: order-pvc
+    system: demo-micro
+    app: order
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 3Gi
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: order-db
+  labels:
+    name: order-db
+    system: demo-micro
+    app: order
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: order-db
+    spec:
+      containers:
+      - name: order-db
+        image: mongo
+        ports:
+        - containerPort: 27017
+        volumeMounts:
+          - name: self-volume
+            mountPath: /data/db
+      volumes:
+        - name: self-volume
+          persistentVolumeClaim:
+            claimName: order-pvc
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: order-db-svc
+  labels:
+    name: order-db-svc
+    system: demo-micro
+    app: order
+spec:
+  selector:
+    name: order-db
+  type: ClusterIP
+  ports:
+    - port: 27017
+      targetPort: 27017
+---
+
+# Payment DB
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: payment-pvc
+  labels:
+    name: payment-pvc
+    system: demo-micro
+    app: payment
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 3Gi
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: payment-db
+  labels:
+    name: payment-db
+    system: demo-micro
+    app: payment
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: payment-db
+    spec:
+      containers:
+      - name: payment-db
+        image: mongo
+        ports:
+        - containerPort: 27017
+        volumeMounts:
+          - name: self-volume
+            mountPath: /data/db
+      volumes:
+        - name: self-volume
+          persistentVolumeClaim:
+            claimName: payment-pvc
+---
+#Mongo DB service
+kind: Service
+apiVersion: v1
+metadata:
+  name: payment-db-svc
+  labels:
+    name: payment-db-svc
+    system: demo-micro
+    app: payment
+spec:
+  selector:
+    name: payment-db
+  type: ClusterIP
+  ports:
+    - port: 27017
+      targetPort: 27017
+---
+
+# Report DB
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: report-pvc
+  labels:
+    name: report-pvc
+    system: demo-micro
+    app: report
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 3Gi
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: report-db
+  labels:
+    name: report-db
+    system: demo-micro
+    app: report
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: report-db
+    spec:
+      containers:
+      - name: report-db
+        image: mongo
+        ports:
+        - containerPort: 27017
+        volumeMounts:
+          - name: self-volume
+            mountPath: /data/db
+      volumes:
+        - name: self-volume
+          persistentVolumeClaim:
+            claimName: report-pvc
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: report-db-svc
+  labels:
+    name: report-db-svc
+    system: demo-micro
+    app: report
+spec:
+  selector:
+    name: report-db
+  type: ClusterIP
+  ports:
+    - port: 27017
+      targetPort: 27017
+---
+
+# Notification DB
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: notification-pvc
+  labels:
+    name: notification-pvc
+    system: demo-micro
+    app: notification
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 3Gi
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: notification-db
+  labels:
+    name: notification-db
+    system: demo-micro
+    app: notification
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: notification-db
+    spec:
+      containers:
+      - name: notification-db
+        image: mongo
+        ports:
+        - containerPort: 27017
+        volumeMounts:
+          - name: self-volume
+            mountPath: /data/db
+      volumes:
+        - name: self-volume
+          persistentVolumeClaim:
+            claimName: notification-pvc
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: notification-db-svc
+  labels:
+    name: notification-db-svc
+    system: demo-micro
+    app: notification
+spec:
+  selector:
+    name: notification-db
+  type: ClusterIP
+  ports:
+    - port: 27017
+      targetPort: 27017
+---
+
+# Frontend DB
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: frontend-pvc
+  labels:
+    name: frontend-pvc
+    system: demo-micro
+    app: frontend
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 3Gi
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: frontend-db
+  labels:
+    name: frontend-db
+    system: demo-micro
+    app: frontend
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: frontend-db
+    spec:
+      containers:
+      - name: frontend-db
+        image: mongo
+        ports:
+        - containerPort: 27017
+        volumeMounts:
+          - name: self-volume
+            mountPath: /data/db
+      volumes:
+        - name: self-volume
+          persistentVolumeClaim:
+            claimName: frontend-pvc
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: frontend-db-svc
+  labels:
+    name: frontend-db-svc
+    system: demo-micro
+    app: frontend
+spec:
+  selector:
+    name: frontend-db
+  type: ClusterIP
+  ports:
+    - port: 27017
+      targetPort: 27017
