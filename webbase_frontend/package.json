@@ -11,7 +11,7 @@
 	"license": "ISC",
 	"dependencies": {
 		"express": "*",
-		"rp": "*",
+		"request-promise": "*",
 		"nunjucks": "*",
 		"express-session" : "*"
 	},
