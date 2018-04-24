@@ -222,7 +222,7 @@ spec:
     spec:
       containers:
       - name: notification-app
-        image: kyllynk/notification:1.2
+        image: kyllynk/notification:1.4
         ports:
         - containerPort: 80
         env:
@@ -327,16 +327,16 @@ spec:
     spec:
       containers:
       - name: frontend-app
-        image: kyllynk/frontend:1.3
+        image: kyllynk/frontend:1.4
         ports:
         - containerPort: 80
         env:
         - name: PORT
           value: "80"
         - name: MONGODB_HOST
-          value: "frontend-db"
+          value: "frontend-db-svc"
         - name: MONGODB_PORT
-          value: "27018"
+          value: "27017"
         - name: MONGODB_DBNAME
           value: "sessions"
         - name: PUBLIC_API_SERVICE

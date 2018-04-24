@@ -129,4 +129,4 @@ app.post("/checkout", async (req, res) => {
 
 
 
-app.listen(9999, () => console.log("Frontend is running on port 9999"));
+app.listen(process.env.PORT || 9999, () => console.log("Frontend is running on port " + (process.env.PORT || 9999)));
