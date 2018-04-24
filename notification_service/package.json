@@ -11,7 +11,9 @@
 	"license": "ISC",
 	"dependencies": {
 		"express": "*",
-		"mongoose": "*"
+		"mongoose": "*",
+		"request" : "*",
+		"request-promise" : "*"
 	},
 	"devDependencies": {
 		"dotenv": "*"
