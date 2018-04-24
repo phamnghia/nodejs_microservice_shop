@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: product-app
-        image: kyllynk/product:1.0
+        image: kyllynk/product:1.2
         ports:
         - containerPort: 80
         env:
@@ -64,7 +64,7 @@ spec:
     spec:
       containers:
       - name: order-app
-        image: kyllynk/order:1.1
+        image: kyllynk/order:1.2
         ports:
         - containerPort: 80
         env:
@@ -118,7 +118,7 @@ spec:
     spec:
       containers:
       - name: payment-app
-        image: kyllynk/payment:1.1
+        image: kyllynk/payment:1.2
         ports:
         - containerPort: 80
         env:
@@ -170,7 +170,7 @@ spec:
     spec:
       containers:
       - name: report-app
-        image: kyllynk/report:1.1
+        image: kyllynk/report:1.2
         ports:
         - containerPort: 80
         env:
@@ -222,7 +222,7 @@ spec:
     spec:
       containers:
       - name: notification-app
-        image: kyllynk/notification:1.0
+        image: kyllynk/notification:1.2
         ports:
         - containerPort: 80
         env:
@@ -270,7 +270,7 @@ spec:
     spec:
       containers:
       - name: public-api-app
-        image: kyllynk/public-api:1.0
+        image: kyllynk/public-api:1.2
         ports:
         - containerPort: 80
         env:
@@ -327,7 +327,7 @@ spec:
     spec:
       containers:
       - name: frontend-app
-        image: kyllynk/frontend:1.0
+        image: kyllynk/frontend:1.2
         ports:
         - containerPort: 80
         env:
