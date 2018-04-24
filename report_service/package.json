@@ -12,6 +12,7 @@
  "dependencies": {
   "express": "*",
 	"mongoose": "*",
+	"request": "*",
 	"request-promise" : "*"
  },
  "devDependencies": {

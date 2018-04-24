@@ -64,7 +64,7 @@ spec:
     spec:
       containers:
       - name: order-app
-        image: kyllynk/order:1.0
+        image: kyllynk/order:1.1
         ports:
         - containerPort: 80
         env:
@@ -118,7 +118,7 @@ spec:
     spec:
       containers:
       - name: payment-app
-        image: kyllynk/payment:1.0
+        image: kyllynk/payment:1.1
         ports:
         - containerPort: 80
         env:
@@ -170,7 +170,7 @@ spec:
     spec:
       containers:
       - name: report-app
-        image: kyllynk/report:1.0
+        image: kyllynk/report:1.1
         ports:
         - containerPort: 80
         env:
