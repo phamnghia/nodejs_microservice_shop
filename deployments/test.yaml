@@ -1,0 +1,59 @@
+# Product DB
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: product-pvc
+  labels:
+    name: product-pvc
+    system: demo-micro
+    app: product
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 3Gi
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: product-db
+  labels:
+    name: product-db
+    system: demo-micro
+    app: product
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: product-db
+    spec:
+      containers:
+      - name: product-db
+        image: mongo
+        ports:
+        - containerPort: 27017
+        volumeMounts:
+          - name: self-volume
+            mountPath: /data/db
+      volumes:
+        - name: self-volume
+          persistentVolumeClaim:
+            claimName: product-pvc
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: product-db-svc
+  labels:
+    name: product-db-svc
+    system: demo-micro
+    app: product
+spec:
+  selector:
+    name: product-db
+  type: ClusterIP
+  ports:
+    - port: 27017
+      targetPort: 27017

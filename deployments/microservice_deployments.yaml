@@ -327,7 +327,7 @@ spec:
     spec:
       containers:
       - name: frontend-app
-        image: kyllynk/frontend:1.4
+        image: kyllynk/frontend:1.5
         ports:
         - containerPort: 80
         env:
